@@ -168,11 +168,9 @@ function errDeal(resolve) {
     r1.question(tips, (answer)=>{
       r1.close()
       if(answer == 1) {
-        console.log('重新')
         resolve2(resolve)
         // process.exit()
       } else if(answer == 2) {
-        console.log('放弃')
         process.exit()
       } else {
         // resolve()
