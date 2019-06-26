@@ -10,7 +10,7 @@ const suffix = ['.js','.jsx'] // 后缀白名单
 // const ignore = ['./pages']
 const entry = './src' // 入口
 const output = './src/lang/' // 输出路径
-const outputFile = `${output}en.js`
+const outputFile = `${output}en.json`
 let increment = true // 是否增量生成
 
 function readFileToObj(fReadName, value, callback){
@@ -44,8 +44,7 @@ function readFileToObj(fReadName, value, callback){
 
     })
     objReadline.on('close', () => {
-
-        let result = 'export default \n' + JSON.stringify(obj)
+        let result = JSON.stringify(obj, null, 2)
         fs.writeFile(outputFile, result, err => {
             if(err) {
                 console.warn(err)
@@ -56,29 +55,6 @@ function readFileToObj(fReadName, value, callback){
 
     })
 }
-
-// 美化
-let newArr = ''
-function beautify(fReadName) {
-    var fRead = fs.createReadStream(fReadName)
-    var objReadline = readline.createInterface({
-        input: fRead,
-    })
-    objReadline.on('line', line => {
-        if(line) {
-            newArr += line.replace(/,/g,',\n')
-        }
-    })
-    objReadline.on('close', () => {
-        fs.writeFile(outputFile, newArr, err => {
-            if(err) {
-                console.warn(err)
-            }
-
-        })
-    })
-}
-
 
 const filePath = path.resolve(entry)
 
@@ -115,10 +91,6 @@ function fileDisplay(filePath,value) {
     })
 }
 
-setTimeout(()=>{
-    beautify(outputFile)
-},1000)
-
 // 开始逻辑
 function run() {
   new Promise((resolve, reject)=>{
@@ -131,7 +103,7 @@ function run() {
             } else {
               try{
                 // 旧文件已存在的json
-                const json = JSON.parse(data.split('export default')[1])
+                const json = JSON.parse(data)
                 console.log(json)
                 resolve(json)
               }catch(e) {
